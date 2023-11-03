@@ -23,7 +23,7 @@ trait HttpResponseTrait
     public function toResponse($request): \Illuminate\Foundation\Application|Response|Application|JsonResponse|ResponseFactory
     {
         if (! empty($this->httpResponse)) {
-            return $this->httpResponse;
+            return $this->httpResponse->setContent(json_encode($this->toArray()));
         }
 
         return response($this->toArray(), $this->httpCode, $this->httpHeaders);
