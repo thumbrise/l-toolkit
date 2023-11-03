@@ -1,6 +1,6 @@
 <?php
 
-namespace Thumbrise\Toolkit\Opresult\Http;
+namespace Thumbrise\Toolkit\Opresult\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;

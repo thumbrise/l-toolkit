@@ -3,7 +3,7 @@
 namespace Thumbrise\Toolkit\Tests\Laravel\Opresult\Http\Middleware;
 
 use Illuminate\Support\Facades\Route;
-use Thumbrise\Toolkit\Opresult\Http\PreventErrorPropagation;
+use Thumbrise\Toolkit\Opresult\Http\Middleware\PreventErrorPropagation;
 use Thumbrise\Toolkit\Opresult\OperationResult;
 use Thumbrise\Toolkit\Tests\Laravel\TestCase;
 

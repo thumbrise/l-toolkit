@@ -4,22 +4,23 @@ namespace Thumbrise\Toolkit\Opresult\Internal\Traits;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
 trait HttpResponseTrait
 {
     protected int $httpCode = 200;
     protected array $httpHeaders = [];
-    protected \Illuminate\Foundation\Application|Response|Application|ResponseFactory|null $httpResponse = null;
+    protected \Illuminate\Foundation\Application|Response|Application|ResponseFactory|JsonResponse|null $httpResponse = null;
 
-    public function asHttpResponse(\Illuminate\Foundation\Application|Response|Application|ResponseFactory|null $response = null): static
+    public function asHttpResponse(\Illuminate\Foundation\Application|Response|Application|ResponseFactory|JsonResponse|null $response = null): static
     {
         $this->httpResponse = $response;
 
         return $this;
     }
 
-    public function toResponse($request): \Illuminate\Foundation\Application|Response|Application|ResponseFactory
+    public function toResponse($request): \Illuminate\Foundation\Application|Response|Application|JsonResponse|ResponseFactory
     {
         if (! empty($this->httpResponse)) {
             return $this->httpResponse;
