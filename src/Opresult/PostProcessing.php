@@ -5,7 +5,7 @@ namespace Thumbrise\Toolkit\Opresult;
 
 class PostProcessing
 {
-    public static function preventErrorPropagation(OperationResult|array $opresult, $env = 'production'): OperationResult|array
+    public static function preventErrorPropagation(OperationResult|array $opresult, $env = 'production'): OperationResult|string
     {
         if (! app()->environment($env)) {
             return $opresult;
@@ -18,9 +18,9 @@ class PostProcessing
         return self::preventErrorPropagationFromArray($opresult);
     }
 
-    private static function preventErrorPropagationFromArray(array $opresult): array
+    private static function preventErrorPropagationFromArray(array $opresult): string
     {
-        return collect($opresult)->only(['error_message', 'error_code', 'errorMessage', 'errorCode'])->toArray();
+        return collect($opresult)->only(['error_message', 'error_code', 'errorMessage', 'errorCode'])->toJson();
     }
 
     private static function preventErrorPropagationFromInstance(OperationResult $opresult): OperationResult
