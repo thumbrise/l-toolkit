@@ -26,7 +26,7 @@ trait HttpResponseTrait
             return $this->httpResponse->setContent(json_encode($this->toArray()));
         }
 
-        return response($this->toArray(), $this->httpCode, $this->httpHeaders);
+        return response()->json($this->toArray(), $this->httpCode, $this->httpHeaders);
     }
 
     public function withHttpCode(int $code = 200): static
