@@ -1,6 +1,6 @@
 <?php
 
-namespace Thumbrise\Toolkit\Tests\Laravel\Http\Middleware;
+namespace Thumbrise\Toolkit\Tests\Laravel\Common\Http\Middleware;
 
 use Illuminate\Support\Facades\Route;
 use Thumbrise\Toolkit\Common\Http\Middleware\ResponseToCamel;

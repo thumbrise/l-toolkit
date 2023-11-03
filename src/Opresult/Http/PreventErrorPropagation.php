@@ -10,17 +10,15 @@ use Thumbrise\Toolkit\Opresult\PostProcessing;
 
 class PreventErrorPropagation
 {
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next, $env = 'production')
     {
         /** @var Response $response */
         $response = $next($request);
 
-        $opResult = $response->getOriginalContent();
-        if (! $opResult instanceof OperationResult) {
-            return $response;
+        $opresult = $response->getOriginalContent();
+        if ($opresult instanceof OperationResult || is_array($opresult)) {
+            $response->setContent(PostProcessing::preventErrorPropagation($opresult, $env));
         }
-
-        $response->setContent(PostProcessing::preventErrorPropagation($opResult));
 
         return $response;
     }
