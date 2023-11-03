@@ -5,6 +5,7 @@ namespace Thumbrise\Toolkit\Opresult;
 use Exception;
 use JsonSerializable;
 use Stringable;
+use Thumbrise\Toolkit\Opresult\Internal\Reflector;
 use UnitEnum;
 
 class Error extends Exception implements Stringable, JsonSerializable

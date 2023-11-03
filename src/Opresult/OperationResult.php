@@ -3,14 +3,18 @@
 namespace Thumbrise\Toolkit\Opresult;
 
 
+use Illuminate\Contracts\Support\Responsable;
 use JsonSerializable;
 use Stringable;
+use Thumbrise\Toolkit\Opresult\Internal\Traits\HttpResponseTrait;
 
 /**
  * @template T
  */
-class OperationResult implements Stringable, JsonSerializable
+class OperationResult implements Stringable, JsonSerializable, Responsable
 {
+    use HttpResponseTrait;
+
     public const CONTEXTUAL_FUNCTIONS_REGISTRY = [
         ['class' => self::class, 'function' => 'error'],
         ['class' => self::class, 'function' => 'withError'],

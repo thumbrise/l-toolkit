@@ -3,7 +3,7 @@
 namespace Thumbrise\Toolkit\Tests\Unit\Opresult;
 
 use PHPUnit\Framework\TestCase;
-use Thumbrise\Toolkit\Opresult\Reflector;
+use Thumbrise\Toolkit\Opresult\Internal\Reflector;
 
 /**
  * !!! При модификации теста, стоит обратить внимание на переменные $line, $function, $class.

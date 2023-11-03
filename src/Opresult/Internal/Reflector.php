@@ -1,6 +1,6 @@
 <?php
 
-namespace Thumbrise\Toolkit\Opresult;
+namespace Thumbrise\Toolkit\Opresult\Internal;
 
 
 /**
