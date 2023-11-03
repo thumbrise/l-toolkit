@@ -1,0 +1,27 @@
+{
+    "name": "thumbrise/toolkit",
+    "authors": [
+        {
+            "name": "Ruslan Kokoev",
+            "email": "ruslan.kokoev.1999@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Thumbrise\\Toolkit\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Thumbrise\\Toolkit\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=8.1"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.0 || ^7.0 || ^8.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
