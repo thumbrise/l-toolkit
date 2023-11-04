@@ -137,12 +137,4 @@ class Error extends Exception implements Stringable, JsonSerializable
         return new static($message, $code, $this);
     }
 
-    private function messageForParentException(mixed $message, mixed $code): string
-    {
-        if (is_array($message)) {
-            $message = var_export($message, true);
-        }
-
-        return sprintf("\ncode: %s\nmessage:\n%s\n", $code, $message);
-    }
 }
