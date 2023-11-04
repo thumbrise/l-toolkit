@@ -19,13 +19,13 @@ class Reflector
 
         foreach ($registry as $each) {
 
-            $classRegistry = $each['class'];
-            $functionRegistry = $each['function'];
+            $classRegistry = @$each['class'];
+            $functionRegistry = @$each['function'];
 
             foreach ($trace as $info) {
 
-                $classTrace = $info['class'];
-                $functionTrace = $info['function'];
+                $classTrace = @$info['class'];
+                $functionTrace = @$info['function'];
 
                 if ($classRegistry === $classTrace && $functionRegistry === $functionTrace) {
                     return $info;
