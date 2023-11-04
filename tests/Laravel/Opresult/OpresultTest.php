@@ -31,6 +31,43 @@ class OpresultTest extends TestCase
     /**
      * @test
      */
+    public function httpMagicMethodResponseCodeValid()
+    {
+        $status = 409;
+        Route::get('test', function () use ($status) {
+            return OperationResult::success('ok')->json(status: $status);
+        });
+
+
+        $response = $this->get('test');
+
+
+        $response->assertJsonPath('data', 'ok');
+        $response->assertStatus($status);
+    }
+
+    /**
+     * @test
+     */
+    public function httpMagicMethodResponseHeadersValid()
+    {
+        $headerKey = 'X-My-Test-Header';
+        $headerValue = 'Super value!';
+        Route::get('test', function () use ($headerKey, $headerValue) {
+            return OperationResult::success('ok')->withHeaders([$headerKey => $headerValue]);
+        });
+
+
+        $response = $this->get('test');
+
+
+        $response->assertJsonPath('data', 'ok');
+        $response->assertHeader($headerKey, $headerValue);
+    }
+
+    /**
+     * @test
+     */
     public function httpResponseCodeValid()
     {
         $status = 409;
@@ -77,7 +114,7 @@ class OpresultTest extends TestCase
 
         $response = $this->getJson('test');
 
-        
+
         $response->assertJsonPath('data', 'ok');
     }
 }

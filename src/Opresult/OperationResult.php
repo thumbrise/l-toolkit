@@ -3,13 +3,22 @@
 namespace Thumbrise\Toolkit\Opresult;
 
 
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use JsonSerializable;
 use Stringable;
 use Thumbrise\Toolkit\Opresult\Internal\Traits\HttpResponseTrait;
 
 /**
  * @template T
+ * @see \Illuminate\Foundation\Application
+ * @mixin Response
+ * @mixin Application
+ * @mixin ResponseFactory
+ * @mixin JsonResponse
  */
 class OperationResult implements Stringable, JsonSerializable, Responsable
 {

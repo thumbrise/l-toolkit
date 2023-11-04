@@ -2,6 +2,7 @@
 
 namespace Thumbrise\Toolkit\Opresult\Internal\Traits;
 
+use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\JsonResponse;
@@ -13,10 +14,32 @@ trait HttpResponseTrait
     protected array $httpHeaders = [];
     protected \Illuminate\Foundation\Application|Response|Application|ResponseFactory|JsonResponse|null $httpResponse = null;
 
+    /**
+     * @throws Exception
+     */
+    public function __call(string $method, array $arguments)
+    {
+        $response = $this->ensureHttpResponse();
+        if (method_exists($response, $method)) {
+            $this->httpResponse = $response->{$method}(...$arguments);
+            return $this;
+        }
+
+        throw new Exception('Method ' . $method . ' does not exist');
+    }
+
     public function asHttpResponse(\Illuminate\Foundation\Application|Response|Application|ResponseFactory|JsonResponse|null $response = null): static
     {
         $this->httpResponse = $response;
 
+        return $this;
+    }
+
+    public function json(...$args)
+    {
+        $response = response()->json(...$args);
+        $this->httpResponse = $response;
+        
         return $this;
     }
 
@@ -41,5 +64,14 @@ trait HttpResponseTrait
         $this->httpHeaders = $headers;
 
         return $this;
+    }
+
+    private function ensureHttpResponse()
+    {
+        if (empty($this->httpResponse)) {
+            $this->httpResponse = \response()->json();
+        }
+
+        return $this->httpResponse;
     }
 }
