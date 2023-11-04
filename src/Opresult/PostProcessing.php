@@ -8,6 +8,10 @@ class PostProcessing
     public static function preventErrorPropagation(OperationResult|array $opresult, $env = 'production'): OperationResult|string
     {
         if (! app()->environment($env)) {
+            if ($opresult instanceof OperationResult) {
+                return $opresult;
+            }
+
             return collect($opresult)->toJson();
         }
 
