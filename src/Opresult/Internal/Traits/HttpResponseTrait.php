@@ -17,29 +17,29 @@ trait HttpResponseTrait
     /**
      * @throws Exception
      */
-    public function __call(string $method, array $arguments)
+    public function __call(string $method, array $args)
     {
         $response = $this->ensureHttpResponse();
-        if (method_exists($response, $method)) {
-            $this->httpResponse = $response->{$method}(...$arguments);
+        if ($method == 'json') {
+            $response = response()->json(...$args);
+            $this->httpResponse = $response;
+
             return $this;
         }
 
-        throw new Exception('Method ' . $method . ' does not exist');
+        if (! method_exists($response, $method)) {
+            throw new Exception('Method ' . $method . ' does not exist');
+        }
+
+        $this->httpResponse = $response->{$method}(...$args);
+
+        return $this;
     }
 
     public function asHttpResponse(\Illuminate\Foundation\Application|Response|Application|ResponseFactory|JsonResponse|null $response = null): static
     {
         $this->httpResponse = $response;
 
-        return $this;
-    }
-
-    public function json(...$args)
-    {
-        $response = response()->json(...$args);
-        $this->httpResponse = $response;
-        
         return $this;
     }
 
