@@ -3,7 +3,7 @@
 namespace Thumbrise\Toolkit\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Thumbrise\Toolkit\Opresult\Console\GenerateSwaggerErrorsCommand;
+use Thumbrise\Toolkit\Opresult\Generate\Console\GenerateSwaggerErrorsCommand;
 
 class ConsoleServiceProvider extends ServiceProvider
 {

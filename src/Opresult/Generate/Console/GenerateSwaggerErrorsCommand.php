@@ -1,11 +1,11 @@
 <?php
 
-namespace Thumbrise\Toolkit\Opresult\Console;
+namespace Thumbrise\Toolkit\Opresult\Generate\Console;
 
 use Illuminate\Console\Command;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use Thumbrise\Toolkit\Opresult\Ast\UsagesSearcher;
+use Thumbrise\Toolkit\Opresult\Generate\SwaggerErrorAttributesGenerator;
 
 class GenerateSwaggerErrorsCommand extends Command
 {
@@ -13,7 +13,7 @@ class GenerateSwaggerErrorsCommand extends Command
 
     protected $signature = 'opresult:generate-swagger-errors';
 
-    public function __construct(private readonly UsagesSearcher $searcher)
+    public function __construct(private readonly SwaggerErrorAttributesGenerator $generator)
     {
         parent::__construct();
     }
@@ -23,10 +23,10 @@ class GenerateSwaggerErrorsCommand extends Command
         $controllersPath = app_path('Http/Controllers');
 
         $filePaths = $this->scanDirRecursive($controllersPath);
-        $this->searcher->search($filePaths[1]);
+        $this->generator->generate($filePaths[1]);
         return;
         foreach ($filePaths as $filePath) {
-            $this->searcher->search($filePath);
+            $this->generator->generate($filePath);
             var_dump('00000000000000000000000000');
         }
     }
