@@ -113,7 +113,7 @@ class UsagesSearcher
             }
             $args = $node->expr->getArgs();
             $message = @$args[0]?->value?->value;
-            $code = @$args[1]?->value?->name?->name;
+            $code = @$args[1]?->value?->name?->name ?? @$args[1]?->value?->value;
             $opresults[] = OperationResult::error($message, $code);
         }
 
