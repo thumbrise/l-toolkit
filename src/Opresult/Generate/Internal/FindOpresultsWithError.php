@@ -1,68 +1,53 @@
 <?php
 
-namespace Thumbrise\Toolkit\Opresult\Ast;
+namespace Thumbrise\Toolkit\Opresult\Generate\Internal;
 
 use Closure;
-use Exception;
-use OpenApi\Attributes\JsonContent;
-use OpenApi\Attributes\Response;
-use PhpParser\BuilderFactory;
+use InvalidArgumentException;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\FindingVisitor;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\ParserFactory;
-use PhpParser\PrettyPrinter\Standard;
 use Thumbrise\Toolkit\Opresult\OperationResult;
 
-class UsagesSearcher
+class FindOpresultsWithError
 {
-
-    public function search(string $filepath)
+    /**
+     * @param string $filepath
+     *
+     * @return OperationResult[]
+     */
+    public function do(string $filepath): array
     {
-        $code = file_get_contents($filepath);
-
-        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
-
-        $ast = $parser->parse($code);
-
-        $nameResolver = new NameResolver(null, [
-            'preserveOriginalNames' => false,
-            'replaceNodes' => true,
-        ]);
-
-        $nodeTraverser = new NodeTraverser();
-        $nodeTraverser->addVisitor($nameResolver);
-        $ast = $nodeTraverser->traverse($ast);
+        $ast = $this->parseFile($filepath);
 
         $returnsOpresultError = $this->filterNodes($ast, $this->isReturnAndIsOpresultError(...));
         //TODO Нужна логика рекурсивного поиска возвратов ошибок opresult
         $returnsUnknown = $this->filterNodes($ast, $this->isReturnAndIsUnknown(...));
-
-        $opresults = $this->parseOpresultsFromReturns($returnsOpresultError);
-
-        $builder = new BuilderFactory();
-
-        $responseAttributes = [];
-        foreach ($opresults as $opresult) {
-            $default = [
-                'errorMessage' => $opresult->error->message(),
-                'errorCode' => $opresult->error->code(),
-            ];
-            $content = $builder->new('\\' . JsonContent::class, ['default' => $default]);
-            $response = $builder->new('\\' . Response::class, ['response' => 200, 'description' => 'Ошибка', 'content' => $content]);
-            $responseAttributes[] = $response;
+        dd($returnsUnknown);
+        /** @var \PhpParser\Node\Stmt\Return_ $returnStmt */
+        foreach ($returnsUnknown as $returnStmt) {
+            $expr = $returnStmt->expr;
+//            if ((! $expr instanceof Node\Expr\MethodCall
+//                 && ! $expr instanceof Node\Expr\StaticCall
+//                )
+//                && ! $expr->var instanceof Node\Expr\Variable
+//            ) {
+//                continue;
+//            }
+            if (! $expr instanceof Node\Expr\MethodCall) {
+                continue;
+            }
+            if (! $expr instanceof Node\Expr\MethodCall) {
+                continue;
+            }
+            $variableName = $returnStmt->expr->var;
+            $variableName->
+            $allWithThisName = [];
+            dd($returnStmt);
         }
-        $s = new Standard();
-        $lines = [];
-        foreach ($responseAttributes as $responseAttribute) {
-            $responseAttributeLine = $s->prettyPrint([$responseAttribute]);
-            $responseAttributeLine = $responseAttributeLine . ',';
-            $lines[] = $responseAttributeLine;
-        }
-        $resultText = join(PHP_EOL, $lines);
-        //TODO Нужна логика проверки существования нужных аттрибутов в коде, для того чтобы не дублировать или не писать их заново
-        echo $resultText;
+        return $this->parseOpresultsFromReturns($returnsOpresultError);
     }
 
     private function filterNodes(array $nodes, Closure $filter): array
@@ -96,20 +81,32 @@ class UsagesSearcher
         return $node instanceof Node\Stmt\Return_ && ! $this->isOpresultError($node);
     }
 
+    private function parseFile(string $filepath)
+    {
+        $nodeTraverser = new NodeTraverser();
+        $nodeTraverser->addVisitor(new NameResolver(null, [
+            'preserveOriginalNames' => false,
+            'replaceNodes' => true,
+        ]));
+
+        $code = file_get_contents($filepath);
+        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
+        $ast = $parser->parse($code);
+
+        return $nodeTraverser->traverse($ast);
+    }
+
     /**
      * @param \PhpParser\Node\Stmt\Return_[] $nodes
      *
      * @return \Thumbrise\Toolkit\Opresult\OperationResult[]
-     * @throws \Exception
      */
     private function parseOpresultsFromReturns(array $nodes): array
     {
         $opresults = [];
         foreach ($nodes as $node) {
-            if (
-                ! $node->expr instanceof Node\Expr\StaticCall
-            ) {
-                throw new Exception('Type error');
+            if (! $node->expr instanceof Node\Expr\StaticCall) {
+                throw new InvalidArgumentException('Type error');
             }
             $args = $node->expr->getArgs();
             $message = @$args[0]?->value?->value;

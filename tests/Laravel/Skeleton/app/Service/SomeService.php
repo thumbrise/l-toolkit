@@ -7,20 +7,25 @@ use Thumbrise\Toolkit\Tests\Laravel\Skeleton\app\Service\SomeNested\SomeNestedSe
 
 class SomeService
 {
+    public OperationResult $somePropertyServiceError;
+
     public function __construct(private readonly SomeNestedService $nestedService)
     {
+        $this->somePropertyServiceError = OperationResult::error('service property error', 'SERVICE_PROPERTY_ERROR');
+    }
+
+    public static function someStaticMethodError()
+    {
+        return OperationResult::error('service static method error', 'SERVICE_STATIC_METHOD_ERROR');
     }
 
     public function handle()
     {
-        if (false) {
-            return OperationResult::error('service error 1', 'SERVICE_ERROR_1');
+        if (rand(0, 1)) {
+            return OperationResult::error('service error', 'SERVICE_ERROR');
         }
-        if (false) {
-            return OperationResult::error('service error 2', 'SERVICE_ERROR_2');
-        }
-        if (false) {
-            return OperationResult::error('service error 3', 'SERVICE_ERROR_3');
+        if (rand(0, 1)) {
+            return $this->somePropertyServiceError;
         }
 
         return $this->nestedService->handle();

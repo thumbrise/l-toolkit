@@ -8,13 +8,13 @@ class SomeNestedService
 {
     public function handle()
     {
-        if (false) {
+        if (rand(0, 1)) {
             return OperationResult::error('service nested error 1', 'SERVICE_INTERNAL_ERROR_1');
         }
-        if (false) {
+        if (rand(0, 1)) {
             return OperationResult::error('service nested error 2', 'SERVICE_INTERNAL_ERROR_2');
         }
-        if (false) {
+        if (rand(0, 1)) {
             return OperationResult::error('service nested error 3', 'SERVICE_INTERNAL_ERROR_3');
         }
 
