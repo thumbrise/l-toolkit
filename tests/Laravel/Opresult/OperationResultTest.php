@@ -10,13 +10,15 @@ use Thumbrise\Toolkit\Tests\Laravel\TestCase;
 
 class OperationResultTest extends TestCase
 {
+
+
     /**
      * @test
      */
     public function errorIsValid()
     {
         $errorMessage = 'some error';
-        $errorCode = 'VALIDATION';
+        $errorCode    = 'VALIDATION';
         Route::get('test', function () use ($errorMessage, $errorCode) {
             return OperationResult::error($errorMessage, $errorCode);
         });
@@ -29,6 +31,7 @@ class OperationResultTest extends TestCase
         $response->assertJsonPath('error_message', $errorMessage);
         $response->assertJsonPath('error_code', $errorCode);
     }
+
 
     /**
      * @test
@@ -48,12 +51,13 @@ class OperationResultTest extends TestCase
         $response->assertStatus($status);
     }
 
+
     /**
      * @test
      */
     public function httpMagicMethodResponseHeadersValid()
     {
-        $headerKey = 'X-My-Test-Header';
+        $headerKey   = 'X-My-Test-Header';
         $headerValue = 'Super value!';
         Route::get('test', function () use ($headerKey, $headerValue) {
             return OperationResult::success('ok')->withHeaders([$headerKey => $headerValue]);
@@ -66,6 +70,7 @@ class OperationResultTest extends TestCase
         $response->assertJsonPath('data', 'ok');
         $response->assertHeader($headerKey, $headerValue);
     }
+
 
     /**
      * @test
@@ -85,12 +90,13 @@ class OperationResultTest extends TestCase
         $response->assertStatus($status);
     }
 
+
     /**
      * @test
      */
     public function httpResponseHeadersValid()
     {
-        $headerKey = 'X-My-Test-Header';
+        $headerKey   = 'X-My-Test-Header';
         $headerValue = 'Super value!';
         Route::get('test', function () use ($headerKey, $headerValue) {
             return OperationResult::success('ok')->withHttpHeaders([$headerKey => $headerValue]);
@@ -104,12 +110,13 @@ class OperationResultTest extends TestCase
         $response->assertHeader($headerKey, $headerValue);
     }
 
+
     /**
      * @test
      */
     public function properlyContextByErrorMake()
     {
-        $expected = __FILE__ . ':' . __LINE__ + 3;
+        $expected = __FILE__.':'.(__LINE__ + 3);
 
 
         $v = Error::make();
@@ -121,16 +128,17 @@ class OperationResultTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
+
     /**
      * @test
      */
     public function properlyContextByErrorWrap()
     {
-        $expected = __FILE__ . ':' . __LINE__ + 4;
+        $expected = __FILE__.':'.(__LINE__ + 4);
 
 
         $initialError = Error::make();
-        $v = $initialError->wrap();
+        $v            = $initialError->wrap();
 
 
         $result = $v->toArray();
@@ -139,12 +147,13 @@ class OperationResultTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
+
     /**
      * @test
      */
     public function properlyContextByOpresultError()
     {
-        $expected = __FILE__ . ':' . __LINE__ + 3;
+        $expected = __FILE__.':'.(__LINE__ + 3);
 
 
         $v = OperationResult::error();
@@ -157,12 +166,13 @@ class OperationResultTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
+
     /**
      * @test
      */
     public function properlyContextByValidate()
     {
-        $expected = __FILE__ . ':' . __LINE__ + 3;
+        $expected = __FILE__.':'.(__LINE__ + 3);
 
 
         $v = Validator::validate(['name' => 15], ['name' => ['string']]);
@@ -174,6 +184,7 @@ class OperationResultTest extends TestCase
         $actual = $result['error_context']['where'];
         $this->assertEquals($expected, $actual);
     }
+
 
     /**
      * @test
@@ -190,4 +201,6 @@ class OperationResultTest extends TestCase
 
         $response->assertJsonPath('data', 'ok');
     }
+
+
 }

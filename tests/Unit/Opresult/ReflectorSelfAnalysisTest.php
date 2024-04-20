@@ -10,12 +10,14 @@ use Thumbrise\Toolkit\Opresult\Internal\Reflector;
  */
 class ReflectorSelfAnalysisTest extends TestCase
 {
+
+
     /**
      * @test
      */
     public function selfAnalysis()
     {
-        $expected = __FILE__ . ':' . __LINE__ + 3;
+        $expected = __FILE__.':'.(__LINE__ + 3);
 
 
         $result = Reflector::getCallInfo([['class' => Reflector::class, 'function' => 'getCallInfo']]);
@@ -24,4 +26,6 @@ class ReflectorSelfAnalysisTest extends TestCase
         $actual = $result['where'];
         $this->assertEquals($expected, $actual);
     }
+
+
 }

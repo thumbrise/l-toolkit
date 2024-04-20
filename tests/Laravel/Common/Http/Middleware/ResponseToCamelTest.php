@@ -8,6 +8,8 @@ use Thumbrise\Toolkit\Tests\Laravel\TestCase;
 
 class ResponseToCamelTest extends TestCase
 {
+
+
     /**
      * @test
      */
@@ -16,7 +18,7 @@ class ResponseToCamelTest extends TestCase
         Route::middleware(ResponseToCamel::class)
             ->get('/api/test', function () {
                 return response()->json([
-                    'some_key' => 'blabla'
+                    'some_key' => 'blabla',
                 ]);
             });
 
@@ -25,6 +27,7 @@ class ResponseToCamelTest extends TestCase
         $response->assertOk();
         $response->assertJson(['someKey' => 'blabla']);
     }
+
 
     /**
      * @test
@@ -39,4 +42,6 @@ class ResponseToCamelTest extends TestCase
 
         $response->assertOk();
     }
+
+
 }

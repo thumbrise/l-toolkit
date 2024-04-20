@@ -9,8 +9,8 @@ class ArrayUtilTest extends TestCase
 {
     private const DATA_MIXED = [
         'some_data1' => 'a',
-        'someData2' => 'a',
-        'someArray' => [
+        'someData2'  => 'a',
+        'someArray'  => [
             'some_inner_data1' => 1,
             'some_inner_data2' => 'a',
         ],
@@ -33,16 +33,17 @@ class ArrayUtilTest extends TestCase
         ],
     ];
 
+
     /**
      * @test
      */
     public function flatMapKeys()
     {
         $data = [
-            'a' => 1,
-            'b' => 2,
-            'c.d' => 3,
-            'c.e' => 4,
+            'a'     => 1,
+            'b'     => 2,
+            'c.d'   => 3,
+            'c.e'   => 4,
             'f.g.h' => 5,
         ];
 
@@ -59,16 +60,17 @@ class ArrayUtilTest extends TestCase
         $this->assertEquals($expectedResult, $result);
     }
 
+
     /**
      * @test
      */
     public function flatMapKeysAssoc()
     {
         $data = [
-            'a' => 1,
-            'b' => 2,
-            'c.d' => 3,
-            'c.e' => 4,
+            'a'     => 1,
+            'b'     => 2,
+            'c.d'   => 3,
+            'c.e'   => 4,
             'f.g.h' => 5,
         ];
 
@@ -76,20 +78,25 @@ class ArrayUtilTest extends TestCase
             'a',
             'c.d',
             'newwanted1' => 'c.e',
-            'newwanted2' => 'f.g.h'
+            'newwanted2' => 'f.g.h',
         ];
 
         $expectedResult = [
-            'a' => 1,               // Не изменилось
-            'd' => 3,               // Спустилось на нижний уровень
-            'newwanted1' => 4,      //Преобразовалось, спустилось на нижний уровень
-            'newwanted2' => 5,      //Преобразовалось, спустилось на нижний уровень
+            'a'          => 1,
+            // Не изменилось.
+            'd'          => 3,
+            // Спустилось на нижний уровень.
+            'newwanted1' => 4,
+            //Преобразовалось, спустилось на нижний уровень.
+            'newwanted2' => 5,
+            //Преобразовалось, спустилось на нижний уровень.
         ];
 
         $result = ArrayUtil::flatMapKeys($data, $keys);
 
         $this->assertEquals($expectedResult, $result);
     }
+
 
     /**
      * @test
@@ -101,6 +108,7 @@ class ArrayUtilTest extends TestCase
         $this->assertSame(self::DATA_CAMEL, $result);
     }
 
+
     /**
      * @test
      */
@@ -111,6 +119,7 @@ class ArrayUtilTest extends TestCase
         $this->assertEmpty($result);
     }
 
+
     /**
      * @test
      */
@@ -120,4 +129,6 @@ class ArrayUtilTest extends TestCase
 
         $this->assertSame(self::DATA_SNAKE, $result);
     }
+
+
 }

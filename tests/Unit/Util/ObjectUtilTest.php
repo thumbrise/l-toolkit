@@ -7,11 +7,13 @@ use Thumbrise\Toolkit\Util\ObjectUtil;
 
 class ObjectUtilTest extends TestCase
 {
+
+
     public function testMapByKeys()
     {
         $from = (object)[
             'name' => 'John',
-            'age' => 30,
+            'age'  => 30,
             'city' => 'New York',
         ];
 
@@ -23,7 +25,7 @@ class ObjectUtilTest extends TestCase
 
         $keysFromTo = [
             'name' => 'fullName',
-            'age' => 'yearsOld',
+            'age'  => 'yearsOld',
             'city' => 'location',
         ];
 
@@ -33,4 +35,6 @@ class ObjectUtilTest extends TestCase
         $this->assertEquals(30, $result->yearsOld);
         $this->assertEquals('New York', $result->location);
     }
+
+
 }

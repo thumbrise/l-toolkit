@@ -1,0 +1,31 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    reportUnmatchedIgnoredErrors: false
+
+    paths:
+        - src/
+        - tests/
+
+    # Level 9 is the highest level
+    level: 5
+
+    ignoreErrors:
+        - '#Call to an undefined method Mockery\\ExpectationInterface\|Mockery\\HigherOrderMessage\:\:once\(\)#'
+        - '#Call to an undefined method Illuminate\\Contracts\\Pagination\\LengthAwarePaginator\:\:through\(\)#'
+        - '#Call to an undefined method Orchid\\Screen\\Field\:\:#'
+        - '#Parameter \#.* of class .* constructor expects .*, Mockery\\LegacyMockInterface given#'
+        - '#.* expects string\|null, Illuminate\\Contracts\\Database\\Query\\Expression given#'
+        - '#Parameter .* \$callback of method Illuminate\\Support\\Collection\<int,.*\>\:\:transform\(\) expects callable\(.*, int\)\: .*, Closure\(.*\)\: array given#'
+        - '#Parameter .* of method .* expects.*App\\Models\\User.*Illuminate\\Contracts\\Auth\\Authenticatable.*given#'
+        - '#Parameter .* of method Illuminate\\Database\\Eloquent\\Builder.*\:\:where\(\) expects array\<int\|string, mixed\>\|Closure\|Illuminate\\Database\\Query\\Expression\|string.*Illuminate\\Database\\Eloquent\\Builder.*given#'
+#        - '#Method App\\UseCases\\.*\:\:handle\(\) has parameter.*with no value type specified in iterable type array#'
+#        - '#PHPDoc tag @var#'
+#
+    excludePaths:
+        - ./app/Services/SmsRu/Internal/SmsRuLib.php
+        - ./app/Orchid/Layouts/User/UserListLayout.php
+        - ./app/Orchid/Layouts/Role/RoleListLayout.php
+#
+#    checkMissingIterableValueType: false

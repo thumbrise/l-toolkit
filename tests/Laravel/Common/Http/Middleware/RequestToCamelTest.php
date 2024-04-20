@@ -9,6 +9,8 @@ use Thumbrise\Toolkit\Tests\Laravel\TestCase;
 
 class RequestToCamelTest extends TestCase
 {
+
+
     /**
      * @test
      */
@@ -30,12 +32,13 @@ class RequestToCamelTest extends TestCase
             });
 
         $response = $this->post('/api/test-post', [
-            'some_key' => 'okOK-ok_OK'
+            'some_key' => 'okOK-ok_OK',
         ]);
 
         $response->assertOk();
         $response->assertJson(['someKey' => 'okOK-ok_OK']);
     }
+
 
     /**
      * @test
@@ -50,4 +53,6 @@ class RequestToCamelTest extends TestCase
 
         $response->assertOk();
     }
+
+
 }

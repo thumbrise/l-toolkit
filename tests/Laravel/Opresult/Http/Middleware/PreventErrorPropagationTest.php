@@ -9,6 +9,8 @@ use Thumbrise\Toolkit\Tests\Laravel\TestCase;
 
 class PreventErrorPropagationTest extends TestCase
 {
+
+
     /**
      * @test
      */
@@ -18,7 +20,7 @@ class PreventErrorPropagationTest extends TestCase
             $this->markTestSkipped('Окружение должно быть testing');
         }
 
-        Route::middleware(PreventErrorPropagation::class . ':testing')
+        Route::middleware(PreventErrorPropagation::class.':testing')
             ->get('/api/test', function () {
                 return OperationResult::error('deep error', 'deep_error')
                     ->withError('client error', 'client_error');
@@ -32,4 +34,6 @@ class PreventErrorPropagationTest extends TestCase
         $response->assertJsonMissingPath('errorPrevious');
         $response->assertJsonMissingPath('errorContext');
     }
+
+
 }

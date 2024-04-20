@@ -10,9 +10,13 @@ use Illuminate\Http\Response;
 
 trait HttpResponseTrait
 {
+
     protected int $httpCode = 200;
+
     protected array $httpHeaders = [];
+
     protected \Illuminate\Foundation\Application|Response|Application|ResponseFactory|JsonResponse|null $httpResponse = null;
+
 
     /**
      * @throws Exception
@@ -21,14 +25,14 @@ trait HttpResponseTrait
     {
         $response = $this->ensureHttpResponse();
         if ($method == 'json') {
-            $response = response()->json(...$args);
+            $response           = response()->json(...$args);
             $this->httpResponse = $response;
 
             return $this;
         }
 
         if (! method_exists($response, $method)) {
-            throw new Exception('Method ' . $method . ' does not exist');
+            throw new Exception('Method '.$method.' does not exist');
         }
 
         $this->httpResponse = $response->{$method}(...$args);
@@ -36,12 +40,14 @@ trait HttpResponseTrait
         return $this;
     }
 
-    public function asHttpResponse(\Illuminate\Foundation\Application|Response|Application|ResponseFactory|JsonResponse|null $response = null): static
+
+    public function asHttpResponse(\Illuminate\Foundation\Application|Response|Application|ResponseFactory|JsonResponse|null $response=null): static
     {
         $this->httpResponse = $response;
 
         return $this;
     }
+
 
     public function toResponse($request): \Illuminate\Foundation\Application|Response|Application|JsonResponse|ResponseFactory
     {
@@ -52,12 +58,14 @@ trait HttpResponseTrait
         return response()->json($this->toArray(), $this->httpCode, $this->httpHeaders);
     }
 
-    public function withHttpCode(int $code = 200): static
+
+    public function withHttpCode(int $code=200): static
     {
         $this->httpCode = $code;
 
         return $this;
     }
+
 
     public function withHttpHeaders(array $headers): static
     {
@@ -65,6 +73,7 @@ trait HttpResponseTrait
 
         return $this;
     }
+
 
     private function ensureHttpResponse()
     {
@@ -74,4 +83,6 @@ trait HttpResponseTrait
 
         return $this->httpResponse;
     }
+
+
 }

@@ -8,7 +8,7 @@ use Stringable;
 use Thumbrise\Toolkit\Opresult\Internal\Reflector;
 use UnitEnum;
 
-class Error extends Exception implements Stringable, JsonSerializable
+final class Error extends Exception implements Stringable, JsonSerializable
 {
     /**
      * Реестр нужен, чтобы была возможность забрать контекст создания ошибки.
@@ -18,21 +18,25 @@ class Error extends Exception implements Stringable, JsonSerializable
         ['class' => self::class, 'function' => 'make'],
         ['class' => self::class, 'function' => 'wrap'],
     ];
-    public const CODE_DEFAULT = 'UNKNOWN';
+    public const CODE_DEFAULT        = 'UNKNOWN';
+
     private mixed $context;
+
     private ?Error $previous;
+
     private readonly mixed $messageOriginal;
+
     private readonly mixed $codeOriginal;
 
-    private function __construct(mixed $message = '', mixed $code = self::CODE_DEFAULT, ?Error $previous = null)
+
+    private function __construct(mixed $message='', mixed $code=self::CODE_DEFAULT, ?Error $previous=null)
     {
         $code = $this->prepareCode($code);
 
-        $this->codeOriginal = $code;
+        $this->codeOriginal    = $code;
         $this->messageOriginal = $message;
-        $this->previous = $previous;
-        $this->context = Reflector::getCallInfo(self::STACK_REFS_REGISTRY);
-
+        $this->previous        = $previous;
+        $this->context         = Reflector::getCallInfo(self::STACK_REFS_REGISTRY);
 
         parent::__construct(
             var_export($this->toArray(), true),
@@ -41,22 +45,26 @@ class Error extends Exception implements Stringable, JsonSerializable
         );
     }
 
-    public static function make(mixed $message = '', mixed $code = self::CODE_DEFAULT, ?Error $previous = null): static
+
+    public static function make(mixed $message='', mixed $code=self::CODE_DEFAULT, ?Error $previous=null): static
     {
         return new static($message, $code, $previous);
     }
+
 
     public function __toString(): string
     {
         return json_encode($this);
     }
 
+
     public function code(): mixed
     {
         return $this->codeOriginal;
     }
 
-    public function is(mixed $code = null): bool
+
+    public function is(mixed $code=null): bool
     {
         if (is_null($code)) {
             return false;
@@ -77,15 +85,18 @@ class Error extends Exception implements Stringable, JsonSerializable
         return false;
     }
 
+
     public function jsonSerialize(): array
     {
         return $this->toArray();
     }
 
+
     public function message(): mixed
     {
         return $this->messageOriginal;
     }
+
 
     /**
      * @param mixed $code
@@ -97,25 +108,29 @@ class Error extends Exception implements Stringable, JsonSerializable
         if ($code instanceof UnitEnum) {
             $code = $code->name;
         }
+
         return $code;
     }
+
 
     public function toArray(): array
     {
         $result = [
             'error_message' => $this->message(),
-            'error_code' => $this->code(),
+            'error_code'    => $this->code(),
         ];
 
         if (! empty($this->context)) {
             $result['error_context'] = $this->context;
         }
+
         if (! empty($this->previous)) {
             $result['error_previous'] = $this->previous->toArray();
         }
 
         return $result;
     }
+
 
     public function withoutContext(): static
     {
@@ -127,15 +142,18 @@ class Error extends Exception implements Stringable, JsonSerializable
         return $this;
     }
 
+
     public function withoutPrevious(): static
     {
         $this->previous = null;
         return $this;
     }
 
-    public function wrap(mixed $message = '', mixed $code = self::CODE_DEFAULT): static
+
+    public function wrap(mixed $message='', mixed $code=self::CODE_DEFAULT): static
     {
         return new static($message, $code, $this);
     }
+
 
 }

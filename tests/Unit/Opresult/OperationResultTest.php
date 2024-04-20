@@ -7,18 +7,20 @@ use Thumbrise\Toolkit\Opresult\OperationResult;
 
 class OperationResultTest extends TestCase
 {
+
+
     /**
      * @test
      */
     public function withError()
     {
-        $code3 = 'Какой то внутренний код уровня 3';
+        $code3   = 'Какой то внутренний код уровня 3';
         $result3 = OperationResult::error('Что то пошло не так на уровне 3', $code3);
 
-        $code2 = 'Какой то внутренний код уровня 2';
+        $code2   = 'Какой то внутренний код уровня 2';
         $result2 = $result3->withError('Что то пошло не так на уровне 2', $code2);
 
-        $code1 = 'Конечный код';
+        $code1   = 'Конечный код';
         $result1 = $result2->withError('И правда что-то не так', $code1);
 
 
@@ -27,15 +29,16 @@ class OperationResultTest extends TestCase
         $this->assertTrue($result1->isError($code3));
     }
 
+
     /**
      * @test
      */
     public function withLastErrorOnly()
     {
-        $code2 = 'Какой то внутренний код уровня 2';
+        $code2   = 'Какой то внутренний код уровня 2';
         $result2 = OperationResult::error('Что то пошло не так на уровне 2', $code2);
 
-        $code1 = 'Конечный код';
+        $code1   = 'Конечный код';
         $result1 = $result2->withError('И правда что-то не так', $code1)->withLastErrorOnly();
 
 
@@ -46,15 +49,16 @@ class OperationResultTest extends TestCase
         $this->assertArrayNotHasKey('error_previous', $errorArray);
     }
 
+
     /**
      * @test
      */
     public function withoutErrorContext()
     {
-        $code2 = 'Какой то внутренний код уровня 2';
+        $code2   = 'Какой то внутренний код уровня 2';
         $result2 = OperationResult::error('Что то пошло не так на уровне 2', $code2);
 
-        $code1 = 'Конечный код';
+        $code1   = 'Конечный код';
         $result1 = $result2->withError('И правда что-то не так', $code1)->withoutErrorContext();
 
 
@@ -66,4 +70,6 @@ class OperationResultTest extends TestCase
         $this->assertArrayHasKey('error_previous', $errorArray);
         $this->assertArrayNotHasKey('error_context', $errorArray['error_previous']);
     }
+
+
 }

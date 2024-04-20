@@ -7,6 +7,8 @@ use Thumbrise\Toolkit\Opresult\Error;
 
 class ErrorTest extends TestCase
 {
+
+
     /**
      * @test
      */
@@ -17,15 +19,16 @@ class ErrorTest extends TestCase
         $this->assertTrue(true);
     }
 
+
     /**
      * @test
      */
     public function withoutContext()
     {
-        $code2 = 'Какой то внутренний код уровня 2';
+        $code2  = 'Какой то внутренний код уровня 2';
         $error2 = Error::make('Что то пошло не так на уровне 2', $code2);
 
-        $code1 = 'Конечный код';
+        $code1  = 'Конечный код';
         $error1 = $error2->wrap('И правда что-то не так', $code1)->withoutContext();
 
         $errorArray = $error1->toArray();
@@ -36,15 +39,16 @@ class ErrorTest extends TestCase
         $this->assertArrayNotHasKey('error_context', $errorArray['error_previous']);
     }
 
+
     /**
      * @test
      */
     public function withoutPrevious()
     {
-        $code2 = 'Какой то внутренний код уровня 2';
+        $code2  = 'Какой то внутренний код уровня 2';
         $error2 = Error::make('Что то пошло не так на уровне 2', $code2);
 
-        $code1 = 'Конечный код';
+        $code1  = 'Конечный код';
         $error1 = $error2->wrap('И правда что-то не так', $code1)->withoutPrevious();
 
         $errorArray = $error1->toArray();
@@ -53,18 +57,19 @@ class ErrorTest extends TestCase
         $this->assertArrayNotHasKey('error_previous', $errorArray);
     }
 
+
     /**
      * @test
      */
     public function wrap()
     {
-        $code3 = 'Какой то внутренний код уровня 3';
+        $code3  = 'Какой то внутренний код уровня 3';
         $error3 = Error::make('Что то пошло не так на уровне 3', $code3);
 
-        $code2 = 'Какой то внутренний код уровня 2';
+        $code2  = 'Какой то внутренний код уровня 2';
         $error2 = $error3->wrap('Что то пошло не так на уровне 2', $code2);
 
-        $code1 = 'Конечный код';
+        $code1  = 'Конечный код';
         $error1 = $error2->wrap('И правда что-то не так', $code1);
 
 
@@ -72,4 +77,6 @@ class ErrorTest extends TestCase
         $this->assertTrue($error1->is($code2));
         $this->assertTrue($error1->is($code3));
     }
+
+
 }

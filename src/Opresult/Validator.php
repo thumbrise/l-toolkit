@@ -6,6 +6,8 @@ use Illuminate\Validation\ValidationException;
 
 class Validator
 {
+
+
     public static function error(array $messages): OperationResult
     {
         $laravelException = ValidationException::withMessages($messages);
@@ -13,7 +15,8 @@ class Validator
         return OperationResult::error($laravelException->errors(), Errors::VALIDATION);
     }
 
-    public static function validate(array $data, array $rules, array $messages = [], array $attributes = []): OperationResult
+
+    public static function validate(array $data, array $rules, array $messages=[], array $attributes=[]): OperationResult
     {
         $validator = \Illuminate\Support\Facades\Validator::make($data, $rules, $messages, $attributes);
         if ($validator->fails()) {
@@ -22,4 +25,6 @@ class Validator
 
         return OperationResult::success();
     }
+
+
 }

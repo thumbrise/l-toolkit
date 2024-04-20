@@ -6,6 +6,8 @@ use Illuminate\Support\Str;
 
 class ArrayUtil
 {
+
+
     /**
      * <code>
      * $data = [
@@ -33,8 +35,10 @@ class ArrayUtil
      *  'newwanted2' => 5, // Преобразовалось, спустилось на нижний уровень
      * ];
      * </code>
+     *
      * @param array $data
      * @param array $keys
+     *
      * @return array
      */
     public static function flatMapKeys(array $data, array $keys): array
@@ -42,7 +46,6 @@ class ArrayUtil
         $result = [];
 
         $data = collect($data);
-
 
         foreach ($keys as $keyWanted => $keyOld) {
             $value = $data->pull($keyOld);
@@ -64,21 +67,25 @@ class ArrayUtil
         return $result;
     }
 
-    public static function keysToCamel(?array $data = []): ?array
+
+    public static function keysToCamel(?array $data=[]): ?array
     {
         return self::keysTo($data, Str::camel(...));
     }
 
-    public static function keysToSnake(?array $data = []): ?array
+
+    public static function keysToSnake(?array $data=[]): ?array
     {
         return self::keysTo($data, Str::snake(...));
     }
+
 
     private static function keysTo(?array $data, callable $realization): ?array
     {
         if (empty($data)) {
             return $data;
         }
+
         $result = [];
 
         foreach ($data as $key => $value) {
@@ -91,5 +98,6 @@ class ArrayUtil
 
         return $result;
     }
+
 
 }
