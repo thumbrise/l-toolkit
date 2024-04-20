@@ -3,10 +3,12 @@
 namespace Thumbrise\Toolkit\Tests\Laravel\Opresult;
 
 use Illuminate\Support\Facades\Route;
+use Thumbrise\Toolkit\Opresult\Error;
 use Thumbrise\Toolkit\Opresult\OperationResult;
+use Thumbrise\Toolkit\Opresult\Validator;
 use Thumbrise\Toolkit\Tests\Laravel\TestCase;
 
-class OpresultTest extends TestCase
+class OperationResultTest extends TestCase
 {
     /**
      * @test
@@ -100,6 +102,77 @@ class OpresultTest extends TestCase
 
         $response->assertJsonPath('data', 'ok');
         $response->assertHeader($headerKey, $headerValue);
+    }
+
+    /**
+     * @test
+     */
+    public function properlyContextByErrorMake()
+    {
+        $expected = __FILE__ . ':' . __LINE__ + 3;
+
+
+        $v = Error::make();
+
+
+        $result = $v->toArray();
+        $this->assertArrayHasKey('error_context', $result);
+        $actual = $result['error_context']['where'];
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function properlyContextByErrorWrap()
+    {
+        $expected = __FILE__ . ':' . __LINE__ + 4;
+
+
+        $initialError = Error::make();
+        $v = $initialError->wrap();
+
+
+        $result = $v->toArray();
+        $this->assertArrayHasKey('error_context', $result);
+        $actual = $result['error_context']['where'];
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function properlyContextByOpresultError()
+    {
+        $expected = __FILE__ . ':' . __LINE__ + 3;
+
+
+        $v = OperationResult::error();
+
+
+        $this->assertTrue($v->isError());
+        $result = $v->toArray();
+        $this->assertArrayHasKey('error_context', $result);
+        $actual = $result['error_context']['where'];
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function properlyContextByValidate()
+    {
+        $expected = __FILE__ . ':' . __LINE__ + 3;
+
+
+        $v = Validator::validate(['name' => 15], ['name' => ['string']]);
+
+
+        $this->assertTrue($v->isError());
+        $result = $v->toArray();
+        $this->assertArrayHasKey('error_context', $result);
+        $actual = $result['error_context']['where'];
+        $this->assertEquals($expected, $actual);
     }
 
     /**

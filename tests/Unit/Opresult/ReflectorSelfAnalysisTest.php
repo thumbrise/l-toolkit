@@ -15,16 +15,13 @@ class ReflectorSelfAnalysisTest extends TestCase
      */
     public function selfAnalysis()
     {
-        $line = 23;
-        $function = 'getCallInfo';
-        $class = Reflector::class;
+        $expected = __FILE__ . ':' . __LINE__ + 3;
 
 
         $result = Reflector::getCallInfo([['class' => Reflector::class, 'function' => 'getCallInfo']]);
 
 
-        $this->assertEquals($line, $result['line']);
-        $this->assertEquals($function, $result['function']);
-        $this->assertEquals($class, $result['class']);
+        $actual = $result['where'];
+        $this->assertEquals($expected, $actual);
     }
 }

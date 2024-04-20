@@ -13,8 +13,8 @@ class Error extends Exception implements Stringable, JsonSerializable
     /**
      * Реестр нужен, чтобы была возможность забрать контекст создания ошибки.
      */
-    public const CONTEXTUAL_FUNCTIONS_REGISTRY = [
-        ...OperationResult::CONTEXTUAL_FUNCTIONS_REGISTRY,
+    public const STACK_REFS_REGISTRY = [
+        ...OperationResult::STACK_REFS_REGISTRY,
         ['class' => self::class, 'function' => 'make'],
         ['class' => self::class, 'function' => 'wrap'],
     ];
@@ -31,13 +31,13 @@ class Error extends Exception implements Stringable, JsonSerializable
         $this->codeOriginal = $code;
         $this->messageOriginal = $message;
         $this->previous = $previous;
-        $this->context = Reflector::getCallInfo(self::CONTEXTUAL_FUNCTIONS_REGISTRY);
+        $this->context = Reflector::getCallInfo(self::STACK_REFS_REGISTRY);
 
 
         parent::__construct(
             var_export($this->toArray(), true),
             0,
-            $previous
+            $previous,
         );
     }
 
@@ -89,6 +89,7 @@ class Error extends Exception implements Stringable, JsonSerializable
 
     /**
      * @param mixed $code
+     *
      * @return mixed|string
      */
     public function prepareCode(mixed $code): mixed

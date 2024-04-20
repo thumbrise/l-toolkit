@@ -24,14 +24,16 @@ class OperationResult implements Stringable, JsonSerializable, Responsable
 {
     use HttpResponseTrait;
 
-    public const CONTEXTUAL_FUNCTIONS_REGISTRY = [
+    public const STACK_REFS_REGISTRY = [
+        ['class' => Validator::class, 'function' => 'validate'],
+        ['class' => Validator::class, 'function' => 'error'],
         ['class' => self::class, 'function' => 'error'],
         ['class' => self::class, 'function' => 'withError'],
     ];
 
     /**
      * @param mixed|null|T $data
-     * @param Error|null $error
+     * @param Error|null   $error
      */
     public function __construct(
         public mixed  $data = null,
@@ -83,7 +85,7 @@ class OperationResult implements Stringable, JsonSerializable, Responsable
         }
 
         return [
-            'data' => $this->data
+            'data' => $this->data,
         ];
     }
 

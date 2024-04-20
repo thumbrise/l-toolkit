@@ -10,12 +10,12 @@ class Reflector
 {
     /**
      * @param array<array{class: class-string, function: callable-string}> $registry
+     *
      * @return array|null
      */
     public static function getCallInfo(array $registry): ?array
     {
         $trace = debug_backtrace(! DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS);
-        $trace = array_reverse($trace);
 
         foreach ($registry as $each) {
 
@@ -28,7 +28,9 @@ class Reflector
                 $functionTrace = @$info['function'];
 
                 if ($classRegistry === $classTrace && $functionRegistry === $functionTrace) {
-                    return $info;
+                    return [
+                        'where' => $info['file'] . ':' . $info['line'],
+                    ];
                 }
             }
         }
