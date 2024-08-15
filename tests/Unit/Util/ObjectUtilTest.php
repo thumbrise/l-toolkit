@@ -5,19 +5,20 @@ namespace Thumbrise\Toolkit\Tests\Unit\Util;
 use Thumbrise\Toolkit\Tests\Unit\TestCase;
 use Thumbrise\Toolkit\Util\ObjectUtil;
 
+/**
+ * @internal
+ */
 class ObjectUtilTest extends TestCase
 {
-
-
     public function testMapByKeys()
     {
-        $from = (object)[
+        $from = (object) [
             'name' => 'John',
             'age'  => 30,
             'city' => 'New York',
         ];
 
-        $to = (object)[
+        $to = (object) [
             'fullName' => '',
             'yearsOld' => 0,
             'location' => '',
@@ -35,6 +36,4 @@ class ObjectUtilTest extends TestCase
         $this->assertEquals(30, $result->yearsOld);
         $this->assertEquals('New York', $result->location);
     }
-
-
 }

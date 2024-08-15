@@ -8,21 +8,18 @@ use Symfony\Component\Translation\TranslatableMessage;
 
 class Validator
 {
-
     private static mixed $globalMessage = 'Validation error.';
 
     private static mixed $globalCode = ErrorsBasic::Validation;
 
     private static mixed $globalHttpCode = Response::HTTP_UNPROCESSABLE_ENTITY;
 
-
     public static function error(
         array $inputErrors,
         mixed $errorMessage,
         mixed $errorCode,
         mixed $errorHttpCode,
-    ): OperationResult
-    {
+    ): OperationResult {
         $laravelException = ValidationException::withMessages($inputErrors);
 
         return self::makeOpresultValidationError(
@@ -33,68 +30,51 @@ class Validator
         );
     }
 
-
     /**
-     * Set or get global default code for validation errors. Default is <pre>\Thumbrise\Toolkit\Opresult\ErrorsBasic::Validation</pre>
-     *
-     * @param mixed|null $value
-     *
-     * @return mixed
+     * Set or get global default code for validation errors. Default is <pre>\Thumbrise\Toolkit\Opresult\ErrorsBasic::Validation</pre>.
      */
-    public static function globalCode(mixed $value=null): mixed
+    public static function globalCode(mixed $value = null): mixed
     {
-        if ($value !== null) {
+        if (null !== $value) {
             self::$globalCode = $value;
         }
 
         return self::$globalCode;
     }
 
-
     /**
-     * Set or get global default http code for validation errors. Default is 422
-     *
-     * @param mixed|null $value
-     *
-     * @return mixed
+     * Set or get global default http code for validation errors. Default is 422.
      */
-    public static function globalHttpCode(mixed $value=null): mixed
+    public static function globalHttpCode(mixed $value = null): mixed
     {
-        if ($value !== null) {
+        if (null !== $value) {
             self::$globalHttpCode = $value;
         }
 
         return self::$globalHttpCode;
     }
 
-
     /**
-     * Set or get global default message for validation errors
-     *
-     * @param TranslatableMessage|string|null $value
-     *
-     * @return \Symfony\Component\Translation\TranslatableMessage|string
+     * Set or get global default message for validation errors.
      */
-    public static function globalMessage(TranslatableMessage|string $value=null): TranslatableMessage|string
+    public static function globalMessage(null|string|TranslatableMessage $value = null): string|TranslatableMessage
     {
-        if ($value !== null) {
+        if (null !== $value) {
             self::$globalMessage = __($value);
         }
 
         return self::$globalMessage;
     }
 
-
     public static function validate(
         array $data,
         array $rules,
-        array $ruleMessages=[],
-        array $ruleAttributes=[],
-        mixed $errorMessage=null,
-        mixed $errorCode=null,
-        mixed $errorHttpCode=null
-    ): OperationResult
-    {
+        array $ruleMessages = [],
+        array $ruleAttributes = [],
+        mixed $errorMessage = null,
+        mixed $errorCode = null,
+        mixed $errorHttpCode = null
+    ): OperationResult {
         $validator = \Illuminate\Support\Facades\Validator::make($data, $rules, $ruleMessages, $ruleAttributes);
         if ($validator->fails()) {
             return self::makeOpresultValidationError(
@@ -108,28 +88,25 @@ class Validator
         return OperationResult::success();
     }
 
-
     private static function makeOpresultValidationError(
         array $inputErrors,
         mixed $errorMessage,
         mixed $errorCode,
         mixed $errorHttpCode,
-    ): OperationResult
-    {
-        $errorMessage  = $errorMessage ?? self::$globalMessage;
-        $errorCode     = $errorCode ?? self::$globalCode;
+    ): OperationResult {
+        $errorMessage  = $errorMessage  ?? self::$globalMessage;
+        $errorCode     = $errorCode     ?? self::$globalCode;
         $errorHttpCode = $errorHttpCode ?? self::$globalHttpCode;
 
         $additional = [
             'error_fields' => $inputErrors,
         ];
-        /** @phpstan-ignore-next-line  */
+
+        // @phpstan-ignore-next-line
         return OperationResult::error(
             $errorMessage,
             $errorCode,
             $additional,
         )->setStatusCode($errorHttpCode);
     }
-
-
 }

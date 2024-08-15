@@ -8,8 +8,6 @@ use Thumbrise\Toolkit\Util\ArrayUtil;
 
 class RequestToCamel
 {
-
-
     public function handle(Request $request, Closure $next)
     {
         $converted = ArrayUtil::keysToCamel($request->input());
@@ -17,6 +15,4 @@ class RequestToCamel
 
         return $next($request);
     }
-
-
 }

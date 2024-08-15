@@ -1,9 +1,6 @@
 <?php
 
-
 if (! function_exists('ddraw')) {
-
-
     function ddraw(mixed ...$values): never
     {
         /** @phpstan-ignore-next-line */
@@ -15,8 +12,6 @@ if (! function_exists('ddraw')) {
             print_r($value);
         }
 
-        die();
+        exit;
     }
-
-
 }

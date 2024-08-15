@@ -8,16 +8,11 @@ use Thumbrise\Toolkit\Opresult\OperationResult;
 
 class Pipeline
 {
-
-
     /**
      * Прогоняет через трубу a | b | c | d | etc и возвращает результат.
-     * В случае возврата из функций OperationResult автоматически распаковывает ->data и посылает в качестве следующего passable в трубе
+     * В случае возврата из функций OperationResult автоматически распаковывает ->data и посылает в качестве следующего passable в трубе.
      *
-     * @param mixed $passable
-     * @param array $operations
-     *
-     * @return mixed|OperationResult|null
+     * @return null|mixed|OperationResult
      */
     public static function process(mixed $passable, array $operations): mixed
     {
@@ -25,7 +20,6 @@ class Pipeline
 
         return PipelineReal::send($passable)->through($operationsCarried)->thenReturn();
     }
-
 
     protected static function carry(callable $operation): Closure
     {
@@ -42,6 +36,4 @@ class Pipeline
             return $next($result);
         };
     }
-
-
 }

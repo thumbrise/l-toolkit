@@ -5,6 +5,9 @@ namespace Thumbrise\Toolkit\Tests\Unit\Util;
 use Thumbrise\Toolkit\Tests\Unit\TestCase;
 use Thumbrise\Toolkit\Util\ArrayUtil;
 
+/**
+ * @internal
+ */
 class ArrayUtilTest extends TestCase
 {
     private const DATA_MIXED = [
@@ -33,7 +36,6 @@ class ArrayUtilTest extends TestCase
         ],
     ];
 
-
     /**
      * @test
      */
@@ -60,7 +62,6 @@ class ArrayUtilTest extends TestCase
         $this->assertEquals($expectedResult, $result);
     }
 
-
     /**
      * @test
      */
@@ -82,21 +83,20 @@ class ArrayUtilTest extends TestCase
         ];
 
         $expectedResult = [
-            'a'          => 1,
+            'a' => 1,
             // Не изменилось.
-            'd'          => 3,
+            'd' => 3,
             // Спустилось на нижний уровень.
             'newwanted1' => 4,
-            //Преобразовалось, спустилось на нижний уровень.
+            // Преобразовалось, спустилось на нижний уровень.
             'newwanted2' => 5,
-            //Преобразовалось, спустилось на нижний уровень.
+            // Преобразовалось, спустилось на нижний уровень.
         ];
 
         $result = ArrayUtil::flatMapKeys($data, $keys);
 
         $this->assertEquals($expectedResult, $result);
     }
-
 
     /**
      * @test
@@ -108,7 +108,6 @@ class ArrayUtilTest extends TestCase
         $this->assertSame(self::DATA_CAMEL, $result);
     }
 
-
     /**
      * @test
      */
@@ -119,7 +118,6 @@ class ArrayUtilTest extends TestCase
         $this->assertEmpty($result);
     }
 
-
     /**
      * @test
      */
@@ -129,6 +127,4 @@ class ArrayUtilTest extends TestCase
 
         $this->assertSame(self::DATA_SNAKE, $result);
     }
-
-
 }

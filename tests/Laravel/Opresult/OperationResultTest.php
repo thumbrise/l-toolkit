@@ -4,16 +4,18 @@ namespace Thumbrise\Toolkit\Tests\Laravel\Opresult;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Testing\AssertableJsonString;
+use Illuminate\Translation\Translator;
 use PHPUnit\Framework\Attributes\Test;
 use Thumbrise\Toolkit\Opresult\Error;
 use Thumbrise\Toolkit\Opresult\OperationResult;
 use Thumbrise\Toolkit\Opresult\Validator;
 use Thumbrise\Toolkit\Tests\Laravel\TestCase;
 
+/**
+ * @internal
+ */
 class OperationResultTest extends TestCase
 {
-
-
     /**
      * @test
      */
@@ -25,15 +27,12 @@ class OperationResultTest extends TestCase
             return OperationResult::error($errorMessage, $errorCode);
         });
 
-
         $response = $this->getJson('test');
-
 
         $response->assertJsonMissingPath('data');
         $response->assertJsonPath('error_message', $errorMessage);
         $response->assertJsonPath('error_code', $errorCode);
     }
-
 
     /**
      * @test
@@ -45,14 +44,11 @@ class OperationResultTest extends TestCase
             return OperationResult::success('ok')->setStatusCode($status);
         });
 
-
         $response = $this->get('test');
-
 
         $response->assertJsonPath('data', 'ok');
         $response->assertStatus($status);
     }
-
 
     /**
      * @test
@@ -65,14 +61,11 @@ class OperationResultTest extends TestCase
             return OperationResult::success('ok')->withHeaders([$headerKey => $headerValue]);
         });
 
-
         $response = $this->get('test');
-
 
         $response->assertJsonPath('data', 'ok');
         $response->assertHeader($headerKey, $headerValue);
     }
-
 
     /**
      * @test
@@ -84,14 +77,11 @@ class OperationResultTest extends TestCase
             return OperationResult::success('ok')->setStatusCode($status);
         });
 
-
         $response = $this->get('test');
-
 
         $response->assertJsonPath('data', 'ok');
         $response->assertStatus($status);
     }
-
 
     /**
      * @test
@@ -104,14 +94,11 @@ class OperationResultTest extends TestCase
             return OperationResult::success('ok')->withHeaders([$headerKey => $headerValue]);
         });
 
-
         $response = $this->get('test');
-
 
         $response->assertJsonPath('data', 'ok');
         $response->assertHeader($headerKey, $headerValue);
     }
-
 
     #[Test]
     public function properlyAddDefaultParams()
@@ -127,7 +114,6 @@ class OperationResultTest extends TestCase
         $json->assertPath('error_message', $expectedMessage);
         $json->assertPath('error_code', $expectedCode);
     }
-
 
     #[Test]
     public function properlyAddGlobalParams()
@@ -147,13 +133,13 @@ class OperationResultTest extends TestCase
         $json->assertPath('error_code', $expectedCode);
     }
 
-
     #[Test]
     public function properlyAddMessageTranslationParam()
     {
         $expectedMessage           = 'Validation error.';
         $expectedMessageTranslated = 'Ошибка валидации.';
-        /** @var \Illuminate\Translation\Translator $translator */
+
+        /** @var Translator $translator */
         $translator = $this->app['translator'];
         $locale     = 'ru';
         $translator->setLocale($locale);
@@ -167,7 +153,6 @@ class OperationResultTest extends TestCase
         $json = new AssertableJsonString($v->toArray());
         $json->assertPath('error_message', $expectedMessageTranslated);
     }
-
 
     #[Test]
     public function properlyAddValidationFields()
@@ -185,54 +170,45 @@ class OperationResultTest extends TestCase
         $json->assertCount(1, 'error_fields');
     }
 
-
     /**
      * @test
      */
     public function properlyContextByErrorMake()
     {
-        $expected = __FILE__.':'.(__LINE__ + 3);
-
+        $expected = __FILE__.':'.(__LINE__ + 2);
 
         $v = Error::make();
-
 
         $result = $v->toArray();
         $this->assertArrayHasKey('error_context', $result);
         $actual = $result['error_context']['where'];
         $this->assertEquals($expected, $actual);
     }
-
 
     /**
      * @test
      */
     public function properlyContextByErrorWrap()
     {
-        $expected = __FILE__.':'.(__LINE__ + 4);
-
+        $expected = __FILE__.':'.(__LINE__ + 3);
 
         $initialError = Error::make();
         $v            = $initialError->wrap();
-
 
         $result = $v->toArray();
         $this->assertArrayHasKey('error_context', $result);
         $actual = $result['error_context']['where'];
         $this->assertEquals($expected, $actual);
     }
-
 
     /**
      * @test
      */
     public function properlyContextByOpresultError()
     {
-        $expected = __FILE__.':'.(__LINE__ + 3);
-
+        $expected = __FILE__.':'.(__LINE__ + 2);
 
         $v = OperationResult::error();
-
 
         $this->assertTrue($v->isError());
         $result = $v->toArray();
@@ -240,18 +216,15 @@ class OperationResultTest extends TestCase
         $actual = $result['error_context']['where'];
         $this->assertEquals($expected, $actual);
     }
-
 
     /**
      * @test
      */
     public function properlyContextByValidate()
     {
-        $expected = __FILE__.':'.(__LINE__ + 3);
-
+        $expected = __FILE__.':'.(__LINE__ + 2);
 
         $v = Validator::validate(['name' => 15], ['name' => ['string']]);
-
 
         $this->assertTrue($v->isError());
         $result = $v->toArray();
@@ -259,7 +232,6 @@ class OperationResultTest extends TestCase
         $actual = $result['error_context']['where'];
         $this->assertEquals($expected, $actual);
     }
-
 
     /**
      * @test
@@ -270,12 +242,8 @@ class OperationResultTest extends TestCase
             return OperationResult::success('ok');
         });
 
-
         $response = $this->getJson('test');
-
 
         $response->assertJsonPath('data', 'ok');
     }
-
-
 }

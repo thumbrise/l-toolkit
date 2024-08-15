@@ -5,10 +5,11 @@ namespace Thumbrise\Toolkit\Tests\Unit\Opresult;
 use PHPUnit\Framework\TestCase;
 use Thumbrise\Toolkit\Opresult\Error;
 
+/**
+ * @internal
+ */
 class ErrorTest extends TestCase
 {
-
-
     /**
      * @test
      */
@@ -18,7 +19,6 @@ class ErrorTest extends TestCase
 
         $this->assertTrue(true);
     }
-
 
     /**
      * @test
@@ -39,7 +39,6 @@ class ErrorTest extends TestCase
         $this->assertArrayNotHasKey('error_context', $errorArray['error_previous']);
     }
 
-
     /**
      * @test
      */
@@ -57,7 +56,6 @@ class ErrorTest extends TestCase
         $this->assertArrayNotHasKey('error_previous', $errorArray);
     }
 
-
     /**
      * @test
      */
@@ -72,11 +70,8 @@ class ErrorTest extends TestCase
         $code1  = 'Конечный код';
         $error1 = $error2->wrap('И правда что-то не так', $code1);
 
-
         $this->assertTrue($error1->is($code1));
         $this->assertTrue($error1->is($code2));
         $this->assertTrue($error1->is($code3));
     }
-
-
 }

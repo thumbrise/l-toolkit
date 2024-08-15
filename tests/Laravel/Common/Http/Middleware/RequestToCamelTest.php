@@ -7,10 +7,11 @@ use Illuminate\Support\Facades\Route;
 use Thumbrise\Toolkit\Common\Http\Middleware\RequestToCamel;
 use Thumbrise\Toolkit\Tests\Laravel\TestCase;
 
+/**
+ * @internal
+ */
 class RequestToCamelTest extends TestCase
 {
-
-
     /**
      * @test
      */
@@ -19,7 +20,8 @@ class RequestToCamelTest extends TestCase
         Route::middleware(RequestToCamel::class)
             ->get('/api/test-get', function (Request $request) {
                 return response()->json($request->input());
-            });
+            })
+        ;
 
         $response = $this->get('/api/test-get?some_key=okOK-ok_OK');
 
@@ -29,7 +31,8 @@ class RequestToCamelTest extends TestCase
         Route::middleware(RequestToCamel::class)
             ->post('/api/test-post', function (Request $request) {
                 return response()->json($request->input());
-            });
+            })
+        ;
 
         $response = $this->post('/api/test-post', [
             'some_key' => 'okOK-ok_OK',
@@ -39,20 +42,17 @@ class RequestToCamelTest extends TestCase
         $response->assertJson(['someKey' => 'okOK-ok_OK']);
     }
 
-
     /**
      * @test
      */
     public function isWorkWithEmptyRequestAndEmptyResponse()
     {
         Route::middleware(RequestToCamel::class)
-            ->get('/api/test', function () {
-            });
+            ->get('/api/test', function () {})
+        ;
 
         $response = $this->get('/api/test');
 
         $response->assertOk();
     }
-
-
 }

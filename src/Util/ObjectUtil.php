@@ -7,31 +7,29 @@ namespace Thumbrise\Toolkit\Util;
  */
 class ObjectUtil
 {
-
-
     /**
      * Преобразует объект $from в объект $to, используя соответствие ключей из массива $keysFromTo.
      *
-     * @param object   $from       Исходный
+     * @param object   $from       исходный
      *                             объект,
      *                             из
      *                             которого
      *                             будут
      *                             взяты
-     *                             значения.
-     * @param T|object $to         Целевой
+     *                             значения
+     * @param object|T $to         целевой
      *                             объект, в
      *                             который будут
      *                             записаны
-     *                             значения.
-     * @param array    $keysFromTo Массив,
+     *                             значения
+     * @param array    $keysFromTo массив,
      *                             содержащий
      *                             соответствие
      *                             ключей между
      *                             объектами $from и
-     *                             $to.
+     *                             $to
      *
-     * @return T Возвращает целевой объект $to с преобразованными значениями.
+     * @return T возвращает целевой объект $to с преобразованными значениями
      */
     public static function mapByKeys(object $from, mixed $to, array $keysFromTo)
     {
@@ -45,6 +43,4 @@ class ObjectUtil
 
         return $to;
     }
-
-
 }

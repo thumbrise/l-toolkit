@@ -6,10 +6,11 @@ use Illuminate\Support\Facades\Route;
 use Thumbrise\Toolkit\Common\Http\Middleware\ResponseToCamel;
 use Thumbrise\Toolkit\Tests\Laravel\TestCase;
 
+/**
+ * @internal
+ */
 class ResponseToCamelTest extends TestCase
 {
-
-
     /**
      * @test
      */
@@ -20,7 +21,8 @@ class ResponseToCamelTest extends TestCase
                 return response()->json([
                     'some_key' => 'blabla',
                 ]);
-            });
+            })
+        ;
 
         $response = $this->get('/api/test');
 
@@ -28,20 +30,17 @@ class ResponseToCamelTest extends TestCase
         $response->assertJson(['someKey' => 'blabla']);
     }
 
-
     /**
      * @test
      */
     public function isWorkWithEmptyResponse()
     {
         Route::middleware(ResponseToCamel::class)
-            ->get('/api/test', function () {
-            });
+            ->get('/api/test', function () {})
+        ;
 
         $response = $this->get('/api/test');
 
         $response->assertOk();
     }
-
-
 }

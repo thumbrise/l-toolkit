@@ -18,7 +18,7 @@ final class Error extends Exception implements Stringable, JsonSerializable
         ['class' => self::class, 'function' => 'make'],
         ['class' => self::class, 'function' => 'wrap'],
     ];
-    public const CODE_DEFAULT        = 'UNKNOWN';
+    public const CODE_DEFAULT = 'UNKNOWN';
 
     private mixed $context;
 
@@ -30,8 +30,7 @@ final class Error extends Exception implements Stringable, JsonSerializable
 
     private readonly mixed $additional;
 
-
-    private function __construct(mixed $message='', mixed $code=self::CODE_DEFAULT, ?Error $previous=null, array $additional=[])
+    private function __construct(mixed $message = '', mixed $code = self::CODE_DEFAULT, ?Error $previous = null, array $additional = [])
     {
         $code = $this->prepareCode($code);
 
@@ -48,26 +47,22 @@ final class Error extends Exception implements Stringable, JsonSerializable
         );
     }
 
-
-    public static function make(mixed $message='', mixed $code=self::CODE_DEFAULT, ?Error $previous=null, array $additional=[]): static
-    {
-        return new static($message, $code, $previous, $additional);
-    }
-
-
     public function __toString(): string
     {
         return json_encode($this);
     }
 
+    public static function make(mixed $message = '', mixed $code = self::CODE_DEFAULT, ?Error $previous = null, array $additional = []): static
+    {
+        return new self($message, $code, $previous, $additional);
+    }
 
     public function code(): mixed
     {
         return $this->codeOriginal;
     }
 
-
-    public function is(mixed $code=null): bool
+    public function is(mixed $code = null): bool
     {
         if (is_null($code)) {
             return false;
@@ -88,22 +83,17 @@ final class Error extends Exception implements Stringable, JsonSerializable
         return false;
     }
 
-
     public function jsonSerialize(): array
     {
         return $this->toArray();
     }
-
 
     public function message(): mixed
     {
         return $this->messageOriginal;
     }
 
-
     /**
-     * @param mixed $code
-     *
      * @return mixed|string
      */
     public function prepareCode(mixed $code): mixed
@@ -116,13 +106,12 @@ final class Error extends Exception implements Stringable, JsonSerializable
         return $code;
     }
 
-
     public function toArray(): array
     {
         $result = [
             'error_message' => $this->message(),
             'error_code'    => $this->code(),
-            ...$this->additional
+            ...$this->additional,
         ];
 
         if (! empty($this->context)) {
@@ -136,7 +125,6 @@ final class Error extends Exception implements Stringable, JsonSerializable
         return $result;
     }
 
-
     public function withoutContext(): static
     {
         $this->context = null;
@@ -147,18 +135,15 @@ final class Error extends Exception implements Stringable, JsonSerializable
         return $this;
     }
 
-
     public function withoutPrevious(): static
     {
         $this->previous = null;
+
         return $this;
     }
 
-
-    public function wrap(mixed $message='', mixed $code=self::CODE_DEFAULT): static
+    public function wrap(mixed $message = '', mixed $code = self::CODE_DEFAULT): static
     {
         return new static($message, $code, $this);
     }
-
-
 }

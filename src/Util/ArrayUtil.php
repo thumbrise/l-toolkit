@@ -6,8 +6,6 @@ use Illuminate\Support\Str;
 
 class ArrayUtil
 {
-
-
     /**
      * <code>
      * $data = [
@@ -16,7 +14,7 @@ class ArrayUtil
      *  'c.d' => 3,
      *  'c.e' => 4,
      *  'f.g.h' => 5,
-     * ];
+     * ];.
      *
      * $keys = [
      *  'a',
@@ -35,11 +33,6 @@ class ArrayUtil
      *  'newwanted2' => 5, // Преобразовалось, спустилось на нижний уровень
      * ];
      * </code>
-     *
-     * @param array $data
-     * @param array $keys
-     *
-     * @return array
      */
     public static function flatMapKeys(array $data, array $keys): array
     {
@@ -52,10 +45,11 @@ class ArrayUtil
 
             if (is_string($keyWanted)) {
                 $result[$keyWanted] = $value;
+
                 continue;
             }
 
-            if (str_contains($keyOld, ".")) {
+            if (str_contains($keyOld, '.')) {
                 $keyReal = str_replace('.', '', strrchr($keyOld, '.'));
             } else {
                 $keyReal = $keyOld;
@@ -67,18 +61,15 @@ class ArrayUtil
         return $result;
     }
 
-
-    public static function keysToCamel(?array $data=[]): ?array
+    public static function keysToCamel(?array $data = []): ?array
     {
         return self::keysTo($data, Str::camel(...));
     }
 
-
-    public static function keysToSnake(?array $data=[]): ?array
+    public static function keysToSnake(?array $data = []): ?array
     {
         return self::keysTo($data, Str::snake(...));
     }
-
 
     private static function keysTo(?array $data, callable $realization): ?array
     {
@@ -90,14 +81,12 @@ class ArrayUtil
 
         foreach ($data as $key => $value) {
             if (is_array($value)) {
-                $result[($realization($key))] = self::keysTo($value, $realization);
+                $result[$realization($key)] = self::keysTo($value, $realization);
             } else {
-                $result[($realization($key))] = $value;
+                $result[$realization($key)] = $value;
             }
         }
 
         return $result;
     }
-
-
 }

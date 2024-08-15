@@ -2,18 +2,13 @@
 
 namespace Thumbrise\Toolkit\Opresult\Internal;
 
-
 /**
  * @internal
  */
 class Reflector
 {
-
-
     /**
-     * @param array<array{class: class-string|string|mixed, function: callable-string|string|mixed}> $registry
-     *
-     * @return array|null
+     * @param array<array{class: class-string|mixed|string, function: callable-string|mixed|string}> $registry
      */
     public static function getCallInfo(array $registry): ?array
     {
@@ -38,6 +33,4 @@ class Reflector
 
         return null;
     }
-
-
 }

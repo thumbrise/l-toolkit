@@ -2,7 +2,6 @@
 
 namespace Thumbrise\Toolkit\Common\Http\Middleware;
 
-
 use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -10,8 +9,6 @@ use Thumbrise\Toolkit\Util\ArrayUtil;
 
 class ResponseToCamel
 {
-
-
     public function handle(Request $request, Closure $next)
     {
         $response = $next($request);
@@ -23,6 +20,4 @@ class ResponseToCamel
 
         return $response;
     }
-
-
 }

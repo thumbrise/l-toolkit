@@ -10,9 +10,7 @@ use Thumbrise\Toolkit\Opresult\PostProcessing;
 
 class PreventErrorPropagation
 {
-
-
-    public function handle(Request $request, Closure $next, $env='production')
+    public function handle(Request $request, Closure $next, $env = 'production')
     {
         /** @var Response $response */
         $response = $next($request);
@@ -24,6 +22,4 @@ class PreventErrorPropagation
 
         return $response;
     }
-
-
 }

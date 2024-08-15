@@ -7,10 +7,11 @@ use Thumbrise\Toolkit\Opresult\Http\Middleware\PreventErrorPropagation;
 use Thumbrise\Toolkit\Opresult\OperationResult;
 use Thumbrise\Toolkit\Tests\Laravel\TestCase;
 
+/**
+ * @internal
+ */
 class PreventErrorPropagationTest extends TestCase
 {
-
-
     /**
      * @test
      */
@@ -23,8 +24,10 @@ class PreventErrorPropagationTest extends TestCase
         Route::middleware(PreventErrorPropagation::class.':testing')
             ->get('/api/test', function () {
                 return OperationResult::error('deep error', 'deep_error')
-                    ->withError('client error', 'client_error');
-            });
+                    ->withError('client error', 'client_error')
+                ;
+            })
+        ;
 
         $response = $this->get('/api/test');
 
@@ -34,6 +37,4 @@ class PreventErrorPropagationTest extends TestCase
         $response->assertJsonMissingPath('errorPrevious');
         $response->assertJsonMissingPath('errorContext');
     }
-
-
 }

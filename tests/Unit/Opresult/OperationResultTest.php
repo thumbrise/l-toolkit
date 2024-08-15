@@ -7,10 +7,11 @@ use PHPUnit\Framework\TestCase;
 use Thumbrise\Toolkit\Opresult\OperationResult;
 use Thumbrise\Toolkit\Tests\Unit\Opresult\Stubs\StubError;
 
+/**
+ * @internal
+ */
 class OperationResultTest extends TestCase
 {
-
-
     #[Test]
     public function properlyAddAdditional()
     {
@@ -20,13 +21,11 @@ class OperationResultTest extends TestCase
                 'some2' => 2,
             ],
         ];
-        $expected   = [
+        $expected = [
             'error_message' => 'error',
             'error_code'    => 'error',
-            ...$additional
+            ...$additional,
         ];
-
-
 
         $v = OperationResult::error('error', 'error', $additional)->withoutErrorContext();
 
@@ -36,7 +35,6 @@ class OperationResultTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-
     #[Test]
     public function properlyAddEnumPrefixInCode()
     {
@@ -45,14 +43,12 @@ class OperationResultTest extends TestCase
             'error_code'    => 'StubError/StubCase',
         ];
 
-
         $v      = OperationResult::error('Some error', StubError::StubCase)->withoutErrorContext();
         $actual = $v->toArray();
 
         $this->assertTrue($v->isError());
         $this->assertSame($expected, $actual);
     }
-
 
     /**
      * @test
@@ -68,12 +64,10 @@ class OperationResultTest extends TestCase
         $code1   = 'Конечный код';
         $result1 = $result2->withError('И правда что-то не так', $code1);
 
-
         $this->assertTrue($result1->isError($code1));
         $this->assertTrue($result1->isError($code2));
         $this->assertTrue($result1->isError($code3));
     }
-
 
     /**
      * @test
@@ -86,14 +80,12 @@ class OperationResultTest extends TestCase
         $code1   = 'Конечный код';
         $result1 = $result2->withError('И правда что-то не так', $code1)->withLastErrorOnly();
 
-
         $this->assertNotNull($result1->error);
         $errorArray = $result1->error->toArray();
         $this->assertArrayHasKey('error_code', $errorArray);
         $this->assertEquals($code1, $errorArray['error_code']);
         $this->assertArrayNotHasKey('error_previous', $errorArray);
     }
-
 
     /**
      * @test
@@ -106,7 +98,6 @@ class OperationResultTest extends TestCase
         $code1   = 'Конечный код';
         $result1 = $result2->withError('И правда что-то не так', $code1)->withoutErrorContext();
 
-
         $this->assertNotNull($result1->error);
         $errorArray = $result1->error->toArray();
         $this->assertArrayHasKey('error_code', $errorArray);
@@ -115,6 +106,4 @@ class OperationResultTest extends TestCase
         $this->assertArrayHasKey('error_previous', $errorArray);
         $this->assertArrayNotHasKey('error_context', $errorArray['error_previous']);
     }
-
-
 }
