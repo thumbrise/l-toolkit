@@ -2,11 +2,56 @@
 
 namespace Thumbrise\Toolkit\Tests\Unit\Opresult;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Thumbrise\Toolkit\Opresult\OperationResult;
+use Thumbrise\Toolkit\Tests\Unit\Opresult\Stubs\StubError;
 
 class OperationResultTest extends TestCase
 {
+
+
+    #[Test]
+    public function properlyAddAdditional()
+    {
+        $additional = [
+            'something' => [
+                'some1' => 1,
+                'some2' => 2,
+            ],
+        ];
+        $expected   = [
+            'error_message' => 'error',
+            'error_code'    => 'error',
+            ...$additional
+        ];
+
+
+
+        $v = OperationResult::error('error', 'error', $additional)->withoutErrorContext();
+
+        $actual = $v->toArray();
+
+        $this->assertTrue($v->isError());
+        $this->assertSame($expected, $actual);
+    }
+
+
+    #[Test]
+    public function properlyAddEnumPrefixInCode()
+    {
+        $expected = [
+            'error_message' => 'Some error',
+            'error_code'    => 'StubError/StubCase',
+        ];
+
+
+        $v      = OperationResult::error('Some error', StubError::StubCase)->withoutErrorContext();
+        $actual = $v->toArray();
+
+        $this->assertTrue($v->isError());
+        $this->assertSame($expected, $actual);
+    }
 
 
     /**

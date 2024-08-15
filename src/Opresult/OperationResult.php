@@ -3,26 +3,23 @@
 namespace Thumbrise\Toolkit\Opresult;
 
 
+use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Traits\ForwardsCalls;
 use JsonSerializable;
 use Stringable;
-use Thumbrise\Toolkit\Opresult\Internal\Traits\HttpResponseTrait;
 
 /**
  * @template T
- * @see      \Illuminate\Foundation\Application
- * @mixin    Response
- * @mixin    Application
- * @mixin    ResponseFactory
  * @mixin    JsonResponse
  */
 final class OperationResult implements Stringable, JsonSerializable, Responsable
 {
-    use HttpResponseTrait;
+    use ForwardsCalls;
 
     public const STACK_REFS_REGISTRY = [
         ['class' => Validator::class, 'function' => 'validate'],
@@ -30,6 +27,8 @@ final class OperationResult implements Stringable, JsonSerializable, Responsable
         ['class' => self::class, 'function' => 'error'],
         ['class' => self::class, 'function' => 'withError'],
     ];
+
+    protected JsonResponse|null $httpResponse = null;
 
 
     /**
@@ -44,15 +43,26 @@ final class OperationResult implements Stringable, JsonSerializable, Responsable
     }
 
 
-    public static function error(mixed $message='', $code=Error::CODE_DEFAULT): static
+    public static function error(mixed $message='', mixed $code=Error::CODE_DEFAULT, array $additional=[]): OperationResult
     {
-        return new static(null, Error::make($message, $code));
+        return new OperationResult(null, Error::make($message, $code, null, $additional));
     }
 
 
-    public static function success(mixed $data=null): static
+    public static function success(mixed $data=null): OperationResult
     {
-        return new static($data, null);
+        return new OperationResult($data, null);
+    }
+
+
+    /**
+     * @throws Exception
+     */
+    public function __call(string $method, array $args)
+    {
+        $this->ensureHttpResponseExists();
+
+        return $this->forwardDecoratedCallTo($this->httpResponse, $method, $args);
     }
 
 
@@ -98,42 +108,50 @@ final class OperationResult implements Stringable, JsonSerializable, Responsable
     }
 
 
-    public function withData(mixed $data): static
+    public function toResponse($request): \Illuminate\Foundation\Application|Response|Application|JsonResponse|ResponseFactory
+    {
+        $this->ensureHttpResponseExists();
+
+        return $this->httpResponse->setContent($this);
+    }
+
+
+    public function withData(mixed $data): OperationResult
     {
         $this->data = $data;
         return $this;
     }
 
 
-    public function withError(mixed $message='', $code=Error::CODE_DEFAULT): static
+    public function withError(mixed $message='', $code=Error::CODE_DEFAULT): OperationResult
     {
         $this->error = $this->makeError($message, $code);
         return $this;
     }
 
 
-    public function withLastErrorOnly(): static
+    public function withLastErrorOnly(): OperationResult
     {
         $this->error = $this->error->withoutPrevious();
         return $this;
     }
 
 
-    public function withoutData(): static
+    public function withoutData(): OperationResult
     {
         $this->data = null;
         return $this;
     }
 
 
-    public function withoutError(): static
+    public function withoutError(): OperationResult
     {
         $this->error = null;
         return $this;
     }
 
 
-    public function withoutErrorContext(): static
+    public function withoutErrorContext(): OperationResult
     {
         if (empty($this->error)) {
             return $this;
@@ -142,6 +160,15 @@ final class OperationResult implements Stringable, JsonSerializable, Responsable
         $this->error = $this->error->withoutContext();
 
         return $this;
+    }
+
+
+    private function ensureHttpResponseExists(): void
+    {
+
+        if (empty($this->httpResponse)) {
+            $this->httpResponse = \response()->json();
+        }
     }
 
 

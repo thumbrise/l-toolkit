@@ -28,14 +28,17 @@ final class Error extends Exception implements Stringable, JsonSerializable
 
     private readonly mixed $codeOriginal;
 
+    private readonly mixed $additional;
 
-    private function __construct(mixed $message='', mixed $code=self::CODE_DEFAULT, ?Error $previous=null)
+
+    private function __construct(mixed $message='', mixed $code=self::CODE_DEFAULT, ?Error $previous=null, array $additional=[])
     {
         $code = $this->prepareCode($code);
 
         $this->codeOriginal    = $code;
         $this->messageOriginal = $message;
         $this->previous        = $previous;
+        $this->additional      = $additional;
         $this->context         = Reflector::getCallInfo(self::STACK_REFS_REGISTRY);
 
         parent::__construct(
@@ -46,9 +49,9 @@ final class Error extends Exception implements Stringable, JsonSerializable
     }
 
 
-    public static function make(mixed $message='', mixed $code=self::CODE_DEFAULT, ?Error $previous=null): static
+    public static function make(mixed $message='', mixed $code=self::CODE_DEFAULT, ?Error $previous=null, array $additional=[]): static
     {
-        return new static($message, $code, $previous);
+        return new static($message, $code, $previous, $additional);
     }
 
 
@@ -106,7 +109,8 @@ final class Error extends Exception implements Stringable, JsonSerializable
     public function prepareCode(mixed $code): mixed
     {
         if ($code instanceof UnitEnum) {
-            $code = $code->name;
+            $separator = '/';
+            $code      = class_basename($code).$separator.$code->name;
         }
 
         return $code;
@@ -118,6 +122,7 @@ final class Error extends Exception implements Stringable, JsonSerializable
         $result = [
             'error_message' => $this->message(),
             'error_code'    => $this->code(),
+            ...$this->additional
         ];
 
         if (! empty($this->context)) {

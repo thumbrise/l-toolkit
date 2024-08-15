@@ -35,7 +35,7 @@
     "prefer-stable": true,
     "scripts": {
         "phpunit": [
-            "@php artisan test"
+            "vendor/bin/phpunit"
         ],
         "phpstan": [
             "vendor/bin/phpstan analyse --memory-limit 4G"

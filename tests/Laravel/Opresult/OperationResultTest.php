@@ -3,6 +3,8 @@
 namespace Thumbrise\Toolkit\Tests\Laravel\Opresult;
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Testing\AssertableJsonString;
+use PHPUnit\Framework\Attributes\Test;
 use Thumbrise\Toolkit\Opresult\Error;
 use Thumbrise\Toolkit\Opresult\OperationResult;
 use Thumbrise\Toolkit\Opresult\Validator;
@@ -40,7 +42,7 @@ class OperationResultTest extends TestCase
     {
         $status = 409;
         Route::get('test', function () use ($status) {
-            return OperationResult::success('ok')->json(status: $status);
+            return OperationResult::success('ok')->setStatusCode($status);
         });
 
 
@@ -79,7 +81,7 @@ class OperationResultTest extends TestCase
     {
         $status = 409;
         Route::get('test', function () use ($status) {
-            return OperationResult::success('ok')->withHttpCode($status);
+            return OperationResult::success('ok')->setStatusCode($status);
         });
 
 
@@ -99,7 +101,7 @@ class OperationResultTest extends TestCase
         $headerKey   = 'X-My-Test-Header';
         $headerValue = 'Super value!';
         Route::get('test', function () use ($headerKey, $headerValue) {
-            return OperationResult::success('ok')->withHttpHeaders([$headerKey => $headerValue]);
+            return OperationResult::success('ok')->withHeaders([$headerKey => $headerValue]);
         });
 
 
@@ -108,6 +110,79 @@ class OperationResultTest extends TestCase
 
         $response->assertJsonPath('data', 'ok');
         $response->assertHeader($headerKey, $headerValue);
+    }
+
+
+    #[Test]
+    public function properlyAddDefaultParams()
+    {
+        $expectedMessage  = 'Validation error.';
+        $expectedCode     = 'ErrorsBasic/Validation';
+        $expectedHttpCode = 422;
+
+        $v = Validator::validate([], ['some' => ['string', 'required']]);
+
+        $this->assertSame($expectedHttpCode, $v->getStatusCode());
+        $json = new AssertableJsonString($v->toArray());
+        $json->assertPath('error_message', $expectedMessage);
+        $json->assertPath('error_code', $expectedCode);
+    }
+
+
+    #[Test]
+    public function properlyAddGlobalParams()
+    {
+        $expectedMessage  = 'Arguments error.';
+        $expectedCode     = 'ErrorsBasic/BadArguments';
+        $expectedHttpCode = 400;
+        Validator::globalMessage($expectedMessage);
+        Validator::globalCode($expectedCode);
+        Validator::globalHttpCode($expectedHttpCode);
+
+        $v = Validator::validate([], ['some' => ['string', 'required']]);
+
+        $this->assertSame($expectedHttpCode, $v->getStatusCode());
+        $json = new AssertableJsonString($v->toArray());
+        $json->assertPath('error_message', $expectedMessage);
+        $json->assertPath('error_code', $expectedCode);
+    }
+
+
+    #[Test]
+    public function properlyAddMessageTranslationParam()
+    {
+        $expectedMessage           = 'Validation error.';
+        $expectedMessageTranslated = 'Ошибка валидации.';
+        /** @var \Illuminate\Translation\Translator $translator */
+        $translator = $this->app['translator'];
+        $locale     = 'ru';
+        $translator->setLocale($locale);
+        $translator->addLines([
+            $expectedMessage => $expectedMessageTranslated,
+        ], $locale);
+        Validator::globalMessage($expectedMessage);
+
+        $v = Validator::validate([], ['some' => ['string', 'required']]);
+
+        $json = new AssertableJsonString($v->toArray());
+        $json->assertPath('error_message', $expectedMessageTranslated);
+    }
+
+
+    #[Test]
+    public function properlyAddValidationFields()
+    {
+        $v = Validator::validate([], ['some' => ['string', 'required']]);
+
+        $json = new AssertableJsonString($v->toArray());
+        $json->assertStructure([
+            'error_message',
+            'error_code',
+            'error_fields',
+            'error_context',
+        ]);
+        $json->assertMissing(['data']);
+        $json->assertCount(1, 'error_fields');
     }
 
 
