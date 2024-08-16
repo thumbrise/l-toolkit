@@ -20,14 +20,11 @@ final class Error extends Exception implements Stringable, JsonSerializable
     ];
     public const CODE_DEFAULT = 'UNKNOWN';
 
+    private static bool $disableSensitiveDetails = false;
     private mixed $context;
-
     private ?Error $previous;
-
     private readonly mixed $messageOriginal;
-
     private readonly mixed $codeOriginal;
-
     private readonly mixed $additional;
 
     private function __construct(mixed $message = '', mixed $code = self::CODE_DEFAULT, ?Error $previous = null, array $additional = [])
@@ -50,6 +47,11 @@ final class Error extends Exception implements Stringable, JsonSerializable
     public function __toString(): string
     {
         return json_encode($this);
+    }
+
+    public static function disableSensitiveDetails(bool $value = true): void
+    {
+        Error::$disableSensitiveDetails = $value;
     }
 
     public static function make(mixed $message = '', mixed $code = self::CODE_DEFAULT, ?Error $previous = null, array $additional = []): static
@@ -113,6 +115,10 @@ final class Error extends Exception implements Stringable, JsonSerializable
             'error_code'    => $this->code(),
             ...$this->additional,
         ];
+
+        if (Error::$disableSensitiveDetails) {
+            return $result;
+        }
 
         if (! empty($this->context)) {
             $result['error_context'] = $this->context;
